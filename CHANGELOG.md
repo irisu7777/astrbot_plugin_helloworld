@@ -12,3 +12,6 @@ v0.2.2 更新：
 - 现在会检查文件名和文件路径是否正确与安全；
 - 现在会检查是否已有重名表情包，若有重名则会尝试添加数字后缀，数字后缀最多添加到 100，之后将保存失败；
 - 添加了 requirements.txt，在 metadata.yaml 中添加了 astrbot_version 项。
+
+v0.2.3 更新：
+- 修复了 metadata.yaml 中 version, astrbot_version 项格式错误的问题。

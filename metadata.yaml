@@ -1,8 +1,9 @@
 name: astrbot_plugin_helloworld # 插件唯一识别名，以 astrbot_plugin_ 前缀开头
 # display_name: my_astrbot_plugin # 用于展示的名字，可以是方便人类阅读的名字（需要版本 >= v4.5.0，低版本不会报错，请放心填写）
 desc: 自己编写的 AstrBot 插件，尝试实现一些简单的 QQ bot 功能。目前支持：存储表情包到本地。 # 插件简短描述
-version: v0.2.1 # 插件版本号。
+version: v0.2.2 # 插件版本号。
 author: Irisu7777 # 作者
 repo: https://github.com/irisu7777/astrbot_plugin_helloworld # 插件的仓库地址
+astrbot_version: v4.9.2 # 插件适配的 AstrBot 版本，请确保插件适配的 AstrBot 版本不高于你当前使用的 AstrBot 版本，否则可能会出现兼容性问题。
 support_platforms:
   - aiocqhttp

@@ -1,0 +1,24 @@
+{
+    "allowed_users": {
+        "type": "list",
+        "items": {
+            "type": "string"
+        },
+        "description": "白名单"
+    },
+    "blocked_users": {
+        "type": "list",
+        "items": {
+            "type": "string"
+        },
+        "description": "黑名单（覆盖白名单）"
+    },
+    "allowed_users_enabled": {
+        "type": "bool",
+        "description": "启用白名单（默认不启用）"
+    },
+    "blocked_users_enabled": {
+        "type": "bool",
+        "description": "启用黑名单（默认不启用）"
+    }
+}

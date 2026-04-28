@@ -145,14 +145,13 @@ async def download_image_async(
     except Exception as e:
         logger.error(f"下载失败: {e}")
         return None
-
-    ext = get_image_ext_from_bytes(img_data)
-    filename = f"{base_name}{ext}"
+    
+    filename = f"{base_name}"
     file_path = save_dir_path / filename
 
     if file_path.exists():
         for i in range(1, max_attempts + 1):
-            candidate = save_dir_path / f"{base_name}_{i}{ext}"
+            candidate = save_dir_path / f"{base_name}_{i}"
             if not candidate.exists():
                 file_path = candidate
                 filename = candidate.name
@@ -160,6 +159,17 @@ async def download_image_async(
         else:
             logger.error("无法保存文件，已存在过多同名文件")
             return None
+
+    try:
+        with open(file_path, "wb") as f:
+            f.write(img_data)
+    except Exception as e:
+        logger.error(f"保存图片失败: {e}")
+        return None 
+        
+    ext = get_image_ext_from_bytes(img_data)
+    filename = f"{filename}{ext}"
+    file_path = save_dir_path / filename
 
     try:
         with open(file_path, "wb") as f:

@@ -12,11 +12,27 @@ def build_savememe_help_text() -> str:
 - save_path（可选字符串参数，默认为空）。图片将被保存在插件数据目录下的 memes/save_path。
 
 示例：
-引用一张图片，并发送 /savememe cute_cat save，则可将图片保存到插件数据目录下的 memes/cute_cat 文件夹中，名字为 cute_cat.<extension>
+引用一张图片，并发送 /savememe cute_cat save，则可将图片保存到插件数据目录下的 memes/save 文件夹中，名字为 cute_cat.<extension>
 
 【注意】如果 cute_cat 已经存在，插件会自动尝试 cute_cat_1、cute_cat_2 等名字，直到找到一个可用的名字或者放弃保存（如果同名文件多于100个）。
 
-2. ... （人家现在会的事情还很少，不过作为主人的女仆，人家迟早会做到完美潇洒的程度的。嗯哼~♪）"""
+2. ... （人家现在会的事情还很少，不过作为主人的女仆，人家迟早会做到完美潇洒的程度的。所以如果有新功能建议的话，也请大家帮帮这个笨蛋女仆哦 OwO！）"""
+
+def build_meme_help_text() -> str:
+    """返回 /meme help 命令的帮助文本。"""
+    return """꧁༺【PokéMEME GO!!】༻꧂
+
+❗请好好按照以下方法来玩弄女仆哦❗
+
+1. 发送 /meme send <image_path>（或者 /mm s <image_path>）来让 Bot 替你发送表情包。
+
+- image_path 是相对于插件数据目录下 memes 文件夹的路径，比如 save/cute_cat.png。
+
+示例：
+发送 /meme send save/cute_cat.png 就可以让 Bot 发送插件数据目录下 memes/save 文件夹中的 cute_cat.png 这张表情包。
+
+2. ... （人家现在会的事情还很少，不过作为主人的女仆，人家迟早会做到完美潇洒的程度的。所以如果有新功能建议的话，也请大家帮帮这个笨蛋女仆哦 OwO！）
+    """
 
 def build_blocked_user_message() -> str:
     """返回用户被黑名单屏蔽时的提示消息。"""
@@ -36,7 +52,7 @@ def build_pathname_invalid_or_unsafe_message(pathname: str) -> str:
 
 def build_savememe_save_success_message(filename: str, save_path: str) -> str:
     """返回表情包保存成功时的提示消息。"""
-    return f"表情包已经成功保存为“插件数据目录下的 memes/{save_path}/{filename}”！女仆修行又进了一步呢~♪"
+    return f"表情包已经成功保存为“插件数据目录/memes{save_path}/{filename}”！女仆修行又进了一步呢~♪"
 
 def build_savememe_save_failure_message() -> str:
     """返回表情包保存失败时的提示消息。"""
@@ -49,3 +65,11 @@ def build_savememe_save_process_message() -> str:
 def build_savememe_save_not_reply_message() -> str:
     """返回表情包保存时未引用消息的提示消息。"""
     return "请确保您引用了消息，不然人家是不知道主人想保存的表情包是什么的哦~♪"
+
+def build_meme_image_not_found_message() -> str:
+    """返回表情包图片未找到时的提示消息。"""
+    return "啊啦啦，好像没有这张表情包哦~♪"
+
+def build_meme_image_path_empty_message() -> str:
+    """返回表情包图片路径为空时的提示消息。"""
+    return "啊嘞嘞？到底是要发送什么表情包呢？qaq"

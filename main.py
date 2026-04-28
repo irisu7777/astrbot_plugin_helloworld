@@ -14,10 +14,15 @@ from .utils.messages import (
     build_savememe_save_failure_message,
     build_savememe_save_process_message,
     build_savememe_save_not_reply_message,
+    build_meme_help_text,
+    build_meme_image_not_found_message,
+    build_meme_image_path_empty_message
 )
 from .utils.response import (
     delayed_plain_result,
+    delayed_chain_result,
     get_user_acceptance_message,
+    get_group_acceptance_message
 )
 from .utils.validators import is_safe_windows_relative_path, is_valid_windows_filename
 
@@ -28,25 +33,38 @@ class MyPlugin(Star):
         print(self.config)
 
     @filter.command_group("savememe", alias={"sm"})
-    @filter.event_message_type(filter.EventMessageType.PRIVATE_MESSAGE)
     def savememe(self):
         pass
 
-    @savememe.command("help")
-    async def help(self, event: AstrMessageEvent):
-        acceptance_message = get_user_acceptance_message(self.config, event.message_obj.sender.user_id) # 根据用户 ID 和插件配置检查是否应该拒绝服务，如果需要拒绝则返回拒绝消息，否则返回 None
-        if acceptance_message is not None:
-            yield await delayed_plain_result(event, acceptance_message)
-            return
+    @savememe.command("help", alias={"h"})
+    async def savememe_help(self, event: AstrMessageEvent):
+        group_id = event.message_obj.group_id # 获取消息中的 group 字段
+        if group_id: # 如果消息中包含 group 字段，说明这是一条群消息
+            acceptance_message = get_group_acceptance_message(self.config, group_id) # 根据群 ID 和插件配置检查是否应该拒绝服务，如果需要拒绝则返回拒绝消息，否则返回 None
+            if acceptance_message is not None:
+                logger.info(f"拒绝了来自群 {group_id} 的消息，因为：{acceptance_message}")
+                return
+        else: # 如果消息中不包含 group 字段，说明这是一条私聊消息
+            acceptance_message = get_user_acceptance_message(self.config, event.message_obj.sender.user_id) # 根据用户 ID 和插件配置检查是否应该拒绝服务，如果需要拒绝则返回拒绝消息，否则返回 None
+            if acceptance_message is not None:
+                yield await delayed_plain_result(event, acceptance_message)
+                return
 
         yield await delayed_plain_result(event, build_savememe_help_text())
 
-    @savememe.command("save")
-    async def save(self, event: AstrMessageEvent, image_name: str = "meme", save_path: str = ""):
-        acceptance_message = get_user_acceptance_message(self.config, event.message_obj.sender.user_id) # 根据用户 ID 和插件配置检查是否应该拒绝服务，如果需要拒绝则返回拒绝消息，否则返回 None
-        if acceptance_message is not None:
-            yield await delayed_plain_result(event, acceptance_message)
-            return
+    @savememe.command("save", alias={"s"})
+    async def savememe_save(self, event: AstrMessageEvent, image_name: str = "meme", save_path: str = ""):
+        group_id = event.message_obj.group_id # 获取消息中的 group 字段
+        if group_id: # 如果消息中包含 group 字段，说明这是一条群消息
+            acceptance_message = get_group_acceptance_message(self.config, group_id) # 根据群 ID 和插件配置检查是否应该拒绝服务，如果需要拒绝则返回拒绝消息，否则返回 None
+            if acceptance_message is not None:
+                logger.info(f"拒绝了来自群 {group_id} 的消息，因为：{acceptance_message}")
+                return
+        else: # 如果消息中不包含 group 字段，说明这是一条私聊消息
+            acceptance_message = get_user_acceptance_message(self.config, event.message_obj.sender.user_id) # 根据用户 ID 和插件配置检查是否应该拒绝服务，如果需要拒绝则返回拒绝消息，否则返回 None
+            if acceptance_message is not None:
+                yield await delayed_plain_result(event, acceptance_message)
+                return
 
         message = event.message_obj.message # 获取消息中的 message 字段
 
@@ -75,10 +93,17 @@ class MyPlugin(Star):
                     return
 
                 save_directory.mkdir(parents=True, exist_ok=True) # 创建保存目录，如果目录已经存在则忽略
+                
+                # 异步下载
+                url = img.url
+                if not url:
+                    yield event.plain_result("图片 URL 无效，无法下载表情包【这条错误信息是不应该出现的】。")
+                    return
 
                 yield await delayed_plain_result(event, build_savememe_save_process_message())
 
-                success = await download_image_async(img.url, str(save_directory), image_name)
+
+                success = await download_image_async(url, str(save_directory), image_name)
                 if success:
                     yield await delayed_plain_result(event, build_savememe_save_success_message(success, save_path))
                 else:
@@ -91,6 +116,73 @@ class MyPlugin(Star):
                 )
         else:
             yield await delayed_plain_result(event, build_savememe_save_not_reply_message())
+
+    @filter.command_group("meme", alias={"mm"})
+    def meme(self):
+        pass
+
+    @meme.command("help", alias={"h"})
+    async def meme_help(self, event: AstrMessageEvent):
+        group_id = event.message_obj.group_id # 获取消息中的 group 字段
+        if group_id: # 如果消息中包含 group 字段，说明这是一条群消息
+            acceptance_message = get_group_acceptance_message(self.config, group_id) # 根据群 ID 和插件配置检查是否应该拒绝服务，如果需要拒绝则返回拒绝消息，否则返回 None
+            if acceptance_message is not None:
+                logger.info(f"拒绝了来自群 {group_id} 的消息，因为：{acceptance_message}")
+                return
+        else: # 如果消息中不包含 group 字段，说明这是一条私聊消息
+            acceptance_message = get_user_acceptance_message(self.config, event.message_obj.sender.user_id) # 根据用户 ID 和插件配置检查是否应该拒绝服务，如果需要拒绝则返回拒绝消息，否则返回 None
+            if acceptance_message is not None:
+                yield await delayed_plain_result(event, acceptance_message)
+                return
+
+        yield await delayed_plain_result(event, build_meme_help_text())
+
+    @meme.command("send", alias={"s"})
+    async def meme_send(self, event: AstrMessageEvent, image_path: str = ""):
+        if not image_path:
+            yield await delayed_plain_result(event, build_meme_image_path_empty_message())
+            return
+        if not is_safe_windows_relative_path(image_path):
+            yield await delayed_plain_result(event, build_pathname_invalid_or_unsafe_message(image_path))
+            return
+        
+        plugin_data_path = Path(get_astrbot_data_path()) / "plugin_data" / self.name # self.name 为插件名称，在 v4.9.2 及以上版本可用，低于此版本请自行指定插件名称
+        image_directory = plugin_data_path / "memes" / image_path
+
+        root_path = plugin_data_path.resolve(strict=False)
+        image_directory = image_directory.resolve(strict=False)
+        try:
+            image_directory.relative_to(root_path)
+        except ValueError:
+            yield event.plain_result("图片路径无效或超出插件目录，请使用安全的相对路径【考虑到我们已经做了安全检查，这条错误信息是不应该出现的】。")
+            return
+        
+        if not image_directory.is_file():
+            yield await delayed_plain_result(event, build_meme_image_not_found_message())
+        else:
+            chain = [
+                Comp.Plain("请问您今天要来点表情包吗？"),
+                Comp.Image.fromFileSystem(str(image_directory))
+            ]
+            yield await delayed_chain_result(event, chain)
+
+    # @filter.command("debug")
+
+    # 监听群消息事件    
+    # @filter.event_message_type(filter.EventMessageType.GROUP_MESSAGE) 
+    # async def group_log_for_debug(self, event: AstrMessageEvent):
+    #     message_obj = event.message_obj # 获取消息的对象内容
+
+    #     self_id = message_obj.self_id # 获取消息中的 self_id 字段
+    #     message_id = message_obj.message_id # 获取消息中的 message_id 字段
+    #     group = message_obj.group # 获取消息中的 group 字段
+    #     sender = message_obj.sender # 获取消息中的 sender 字段
+    #     message = message_obj.message # 获取消息中的 message 字段
+
+    #     if message:
+    #         logger.info(f"{self_id} 收到了来自 {group} 中的 {sender} 发出的一条群消息，消息编号为 {message_id}，消息内容为：{message}。")
+    #     else:
+    #         logger.info(f"{group} 中的 {sender} 正在输入。")
 
     # 监听私聊消息事件
     # @filter.event_message_type(filter.EventMessageType.PRIVATE_MESSAGE)

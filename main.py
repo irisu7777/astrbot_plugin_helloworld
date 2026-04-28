@@ -80,7 +80,7 @@ class MyPlugin(Star):
 
                 success = await download_image_async(img.url, str(save_directory), image_name)
                 if success:
-                    yield await delayed_plain_result(event, build_savememe_save_success_message(save_path, success))
+                    yield await delayed_plain_result(event, build_savememe_save_success_message(success, save_path))
                 else:
                     yield await delayed_plain_result(event, build_savememe_save_failure_message())
 

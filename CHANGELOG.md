@@ -11,7 +11,13 @@ v0.2.1 更新：
 v0.2.2 更新：
 - 现在会检查文件名和文件路径是否正确与安全；
 - 现在会检查是否已有重名表情包，若有重名则会尝试添加数字后缀，数字后缀最多添加到 100，之后将保存失败；
-- 添加了 requirements.txt，在 metadata.yaml 中添加了 astrbot_version 项。
+- 添加了 requirements.txt，在 metadata.yaml 中添加了 astrbot_version, display_name 项。
 
 v0.2.3 更新：
 - 修复了 metadata.yaml 中 version, astrbot_version 项格式错误的问题。
+
+v0.2.4 更新：
+- 增加了群组白名单与黑名单；
+- 新建 utils，将与插件逻辑外的代码整合到该文件夹中；
+- 重设 `/savememe save` 参数顺序，现在第一个可选参数将是文件名；
+- 规范了图片下载，现在下载之前会做基本的安全检查，以及会拒绝过大图片的下载。

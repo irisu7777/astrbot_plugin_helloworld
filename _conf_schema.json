@@ -4,21 +4,56 @@
         "items": {
             "type": "string"
         },
-        "description": "白名单"
+        "description": "用户白名单",
+        "hint": "如果启用用户白名单，则只有在此列表中的用户可以使用插件功能"
     },
+    "allowed_users_enabled": {
+        "type": "bool",
+        "description": "启用用户白名单",
+        "hint": "默认不启用"
+    },
+
     "blocked_users": {
         "type": "list",
         "items": {
             "type": "string"
         },
-        "description": "黑名单（覆盖白名单）"
-    },
-    "allowed_users_enabled": {
-        "type": "bool",
-        "description": "启用白名单（默认不启用）"
+        "description": "用户黑名单",
+        "hint": "如果启用用户黑名单，则在此列表中的用户将无法使用插件功能；如果同时启用用户白名单和用户黑名单，则用户黑名单优先级更高"
     },
     "blocked_users_enabled": {
         "type": "bool",
-        "description": "启用黑名单（默认不启用）"
+        "description": "启用用户黑名单",
+        "hint": "默认不启用"
+    },
+
+    "allowed_groups": {
+        "type": "list",
+        "items": {
+            "type": "string"
+        },
+        "description": "群组白名单",
+        "hint": "如果启用群组白名单，则只有在此列表中的群组可以使用插件功能"
+    },
+    "allowed_groups_enabled": {
+        "type": "bool",
+        "default": true,
+        "description": "启用群组白名单",
+        "hint": "默认启用"
+    },
+
+    "blocked_groups": {
+        "type": "list",
+        "items": {
+            "type": "string"
+        },
+        "description": "群组黑名单",
+        "hint": "如果启用群组黑名单，则在此列表中的群组将无法使用插件功能；如果同时启用群组白名单和群组黑名单，则群组黑名单优先级更高"
+    },
+    "blocked_groups_enabled": {
+        "type": "bool",
+        "default": false,
+        "description": "启用群组黑名单",
+        "hint": "默认不启用"
     }
 }
